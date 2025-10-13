@@ -1,27 +1,53 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import routes from './src/routes/index.js'; 
+import routes from './src/routes/index.js';
+import dbConnection from './src/config/database.js';
 import logger from './src/middlewares/logger.js';
-import dbConection from './src/config/database.js';
+import errorHandler from './src/middlewares/errorHandler.js';
+import setupGlobalErrorHandlers from './src/middlewares/globalErrorHandler.js';
+import cors from 'cors';
+import initializeData from './src/config/initializeData.js';
 
-dotenv.config(); // Carga las variables de entorno desde el archivo .env
+dotenv.config();
 
-const app = express (); // Crea una instancia de la aplicación Express
-dbConection(); // Conecta a la base de datos
-app.use(express.json()); // Habilita el parseo de JSON en las solicitudes entrantes
-app.use(logger); // Usa el middleware de logger para registrar las solicitudes
+setupGlobalErrorHandlers();
 
-app.get('/', (req, res) => { // Ruta principal para la raíz del servidor
-    res.send('Welcome!!'); // Responde con un mensaje de bienvenida
+const app = express();
+dbConnection();
+console.log("CORS ORIGIN:", process.env.FRONT_APP_URL);
+app.use(
+  cors({
+    origin: process.env.FRONT_APP_URL,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
+
+app.use(express.json());
+app.use(logger);
+
+app.get('/', (req, res) => {
+  res.send('WELCOME!');
 });
-app.use('/api', (req, res, next) => {
-  console.log('Request reached /api:', req.path);
-  next();
+
+app.use('/api', routes);
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Ruta no encontrada',
+    method: req.method,
+    url: req.originalUrl
+  });
 });
-app.use('/api', routes); // Usa las rutas definidas en categoryRoutes bajo el prefijo /api
 
-const PORT = process.env.PORT || 3000;
+if (process.env.INITIAL_DATA === "development") {
+  console.log("Development environment, creating mocking data...");
+  initializeData();
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.use(errorHandler);
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on http://localhost:${process.env.PORT}`);
 });
