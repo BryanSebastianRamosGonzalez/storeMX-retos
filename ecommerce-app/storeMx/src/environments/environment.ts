@@ -1,3 +1,4 @@
 export const environment = {
-    BACK_URL:'https://storemx-retos-api.onrender.com/api'
+  production: true,
+  apiUrl: 'https://storemx-retos-api.onrender.com/api'
 };
