@@ -18,7 +18,7 @@ import { environment } from '../../../../environments/environment.development';
   providedIn: 'root',
 })
 export class CartService {
-  private baseUrl = `${environment.BACK_URL}/cart`;
+  private baseUrl = `${environment.apiUrl}/cart`;
 
   // Inicializamos con null, pero el flujo lo actualizará rápido
   private cartSubject = new BehaviorSubject<Cart | null>(null);

@@ -17,7 +17,8 @@ dbConnection();
 console.log("CORS ORIGIN:", process.env.FRONT_APP_URL);
 app.use(
   cors({
-    origin: process.env.FRONT_APP_URL,
+    origin: ['http://localhost:4200',                      
+    'https://ecommerce-app-gx34.onrender.com'],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
     optionsSuccessStatus: 200,

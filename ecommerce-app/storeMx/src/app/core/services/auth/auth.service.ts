@@ -15,7 +15,7 @@ export type decodedToken = {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = `${environment.BACK_URL}/auth`;//esto es lo que se cambio para usar el environment.ts
+  private baseUrl = `${environment.apiUrl}/auth`;//esto es lo que se cambio para usar el environment.ts
   private loggedIn = new BehaviorSubject<boolean>(!!this.token);
   isLoggedIn$ = this.loggedIn.asObservable();
   

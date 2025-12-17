@@ -15,7 +15,7 @@ interface CheckoutData {
   providedIn: 'root',
 })
 export class CheckOutService {
-  private baseUrl = `${environment.BACK_URL}/orders`;
+  private baseUrl = `${environment.apiUrl}/orders`;
 
   constructor(
     private http: HttpClient,

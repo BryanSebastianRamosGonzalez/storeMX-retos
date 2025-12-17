@@ -33,11 +33,11 @@ export interface PaymentMethod {
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = `${environment.BACK_URL}/users`;
+  private baseUrl = `${environment.apiUrl}/users`;
   // Endpoints
-  private addressUrl = `${environment.BACK_URL}/shipping-address`;
+  private addressUrl = `${environment.apiUrl}/shipping-address`;
   // Asegúrate de haber creado esta ruta en el backend como vimos antes
-  private paymentUrl = `${environment.BACK_URL}/payment-methods`; 
+  private paymentUrl = `${environment.apiUrl}/payment-methods`; 
 
   // Subjects (Estado Reactivo)
   private addressesSubject = new BehaviorSubject<Address[]>([]);

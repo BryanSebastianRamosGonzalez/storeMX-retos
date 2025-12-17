@@ -15,7 +15,7 @@ export type filters = {
 })
 
 export class ProductsService {
-  private baseUrl = `${environment.BACK_URL}/products`;//esto es lo que se cambio para usar las variables de entorno 
+  private baseUrl = `${environment.apiUrl}/products`;//esto es lo que se cambio para usar las variables de entorno 
 
   constructor(private httpClient:HttpClient) { }
 
