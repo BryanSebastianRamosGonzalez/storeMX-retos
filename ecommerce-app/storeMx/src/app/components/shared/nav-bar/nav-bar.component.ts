@@ -35,12 +35,11 @@ export class NavBarComponent {
   userRoutes: routeItem[] = [
     { title: 'Mi Perfil', route: '/user/profile' },
     { title: 'Carrito', route: '/user/cart' },
-    { title: 'Wishlist', route: '/user/wishlist' }, // 🛑 NUEVO: Wishlist 🛑
+   
   ];
 
   adminRoutes: routeItem[] = [
-    { title: 'Inventario', route: '/admin/inventario' },
-    { title: 'Pedidos', route: '/admin/pedidos' },       
+          
   ];
   
   private authService = inject(AuthService);

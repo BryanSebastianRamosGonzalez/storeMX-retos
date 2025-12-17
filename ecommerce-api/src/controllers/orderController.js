@@ -54,7 +54,7 @@ async function getOrdersByUser(req, res, next) {
 
     const orders = await Order.find({ user: userId })
       .populate("user", "name email")
-      .populate("products.product") // Asegúrate que coincida con tu Schema de Order (product vs productId)
+      .populate("products.productId") // Asegúrate que coincida con tu Schema de Order (product vs productId)
       .populate("shippingAddress")
       .populate("paymentMethod")
       .sort({ createdAt: -1 });
