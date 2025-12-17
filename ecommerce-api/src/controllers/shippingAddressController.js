@@ -1,12 +1,10 @@
 import ShippingAddress from '../models/shippingAddress.js';
 
-// Crear una nueva dirección de envío
 const createShippingAddress = async (req, res, next) => {
   try {
     const { name, address, city, state, postalCode, country, phone, isDefault, addressType } = req.body;
-    const user = req.user.userId; // Asumiendo que tienes middleware de autenticación
+    const user = req.user.userId; 
 
-    // Si esta dirección se marca como default, desmarcar las demás
     if (isDefault) {
       await ShippingAddress.updateMany(
         { user },
@@ -38,13 +36,12 @@ const createShippingAddress = async (req, res, next) => {
   }
 };
 
-// Obtener todas las direcciones del usuario
 const getUserAddresses = async (req, res, next) => {
   try {
     const userId = req.user.userId;
 
     const addresses = await ShippingAddress.find({ user: userId })
-      .sort({ isDefault: -1, _id: -1 }); // Default primero, luego más recientes
+      .sort({ isDefault: -1, _id: -1 }); 
 
     res.status(200).json({
       message: 'Addresses retrieved successfully',
@@ -56,7 +53,6 @@ const getUserAddresses = async (req, res, next) => {
   }
 };
 
-// Obtener una dirección específica
 const getAddressById = async (req, res, next) => {
   try {
     const { addressId } = req.params;
@@ -77,7 +73,6 @@ const getAddressById = async (req, res, next) => {
   }
 };
 
-// Obtener la dirección por defecto del usuario
 const getDefaultAddress = async (req, res, next) => {
   try {
     const userId = req.user.userId;

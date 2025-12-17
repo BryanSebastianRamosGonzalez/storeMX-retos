@@ -54,7 +54,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'order-success/:orderId', // Acepta el ID de la orden como parámetro
+    path: 'order-success/:orderId',
     loadComponent: () =>
       import('./pages/order-success/order-success.component').then(
         (c) => c.OrderSuccessComponent
@@ -69,7 +69,7 @@ export const routes: Routes = [
         (c) => c.UserProfileComponent
       ),
     title: 'Mi Perfil y Dashboard',
-    canActivate: [authGuard], // 🛡️ CRÍTICO: Ruta protegida
+    canActivate: [authGuard], 
   },
   {
     path: 'payment-shipping',

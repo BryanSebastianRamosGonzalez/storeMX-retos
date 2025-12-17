@@ -1,11 +1,8 @@
-// src/app/core/services/user/user.service.ts
-
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 
-// --- INTERFACES ---
 export interface Address {
   _id: string; 
   name: string;      
@@ -21,9 +18,9 @@ export interface Address {
 
 export interface PaymentMethod {
   _id: string;
-  type: string;        // 'credit_card', 'debit_card', etc.
-  provider: string;    // 'Visa', 'Mastercard'
-  cardNumber: string;  // Solo últimos 4 dígitos
+  type: string;       
+  provider: string;  
+  cardNumber: string; 
   cardHolderName: string;
   expiryDate: string;
   isDefault: boolean;
@@ -34,12 +31,9 @@ export interface PaymentMethod {
 })
 export class UserService {
   private baseUrl = `${environment.apiUrl}/users`;
-  // Endpoints
   private addressUrl = `${environment.apiUrl}/shipping-address`;
-  // Asegúrate de haber creado esta ruta en el backend como vimos antes
   private paymentUrl = `${environment.apiUrl}/payment-methods`; 
 
-  // Subjects (Estado Reactivo)
   private addressesSubject = new BehaviorSubject<Address[]>([]);
   addresses$ = this.addressesSubject.asObservable();
 
@@ -48,9 +42,6 @@ export class UserService {
 
   constructor(private httpClient: HttpClient) { }
 
-  // ==========================================
-  // 📍 1. GESTIÓN DE DIRECCIONES (ADDRESSES)
-  // ==========================================
 
   loadAddresses(): void {
     this.httpClient.get<{ addresses: Address[] }>(this.addressUrl).pipe(
@@ -59,8 +50,6 @@ export class UserService {
         return of({ addresses: [] });
       })
     ).subscribe(response => {
-      // Si el backend devuelve { addresses: [] } usamos eso, si devuelve array directo, ajustamos.
-      // Asumo tu estructura actual:
       this.addressesSubject.next(response.addresses || []);
     });
   }
@@ -74,7 +63,7 @@ export class UserService {
       }),
       catchError(error => {
         console.error('Error al guardar dirección:', error);
-        throw error; // Lanzamos el error para que el componente lo sepa
+        throw error;
       })
     );
   }
@@ -89,12 +78,8 @@ export class UserService {
     );
   }
 
-  // ==========================================
-  // 💳 2. GESTIÓN DE PAGOS (PAYMENT METHODS)
-  // ==========================================
 
   loadPaymentMethods(): void {
-    // El backend devuelve un array directo [{}, {}]
     this.httpClient.get<PaymentMethod[]>(this.paymentUrl).pipe(
       catchError(error => {
         console.error('Error cargando pagos:', error);
@@ -106,7 +91,6 @@ export class UserService {
   }
 
   addPaymentMethod(data: any): Observable<PaymentMethod> {
-    // El backend devuelve { message: '...', paymentMethod: {...} } según tu controller nuevo
     return this.httpClient.post<{ paymentMethod: PaymentMethod }>(this.paymentUrl, data).pipe(
       map(res => res.paymentMethod),
       tap((savedPayment) => {
@@ -131,7 +115,6 @@ export class UserService {
   }
 
   getUserProfile(): Observable<any> {
-    // Esta ruta debe coincidir con tu backend (router.get('/profile', ...))
     return this.httpClient.get(`${this.baseUrl}/profile`);
   }
 }

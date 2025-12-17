@@ -10,10 +10,9 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 export class OrderSuccessComponent {
   orderId: string | null = null;
 
-  constructor(private route: ActivatedRoute) { } // Inyectar ActivatedRoute
+  constructor(private route: ActivatedRoute) { } 
 
   ngOnInit(): void {
-    // Leer el ID que viene en la URL
     this.orderId = this.route.snapshot.paramMap.get('orderId');
   }
 }

@@ -1,9 +1,7 @@
-// src/app/pages/user/user-forms/user-forms.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// Importamos todo del UserService
 import { Address, PaymentMethod, UserService } from '../../../../core/services/user/user.service'; 
 import { Observable } from 'rxjs';
 
@@ -16,11 +14,9 @@ import { Observable } from 'rxjs';
 })
 export class UserFormsComponent implements OnInit {
 
-  // OBSERVABLES
   addresses$!: Observable<Address[]>;
   paymentMethods$!: Observable<PaymentMethod[]>;
 
-  // OBJETOS PARA FORMULARIOS
   newAddress: Omit<Address, '_id' | 'isDefault'> = { 
     name: '', address: '', city: '', state: '', postalCode: '', 
     phone: '', country: 'México', addressType: 'home' 
@@ -33,19 +29,16 @@ export class UserFormsComponent implements OnInit {
     expiryDate: ''      
   };
 
-  constructor(private userService: UserService) { } // Solo inyectamos UserService
+  constructor(private userService: UserService) { } 
 
   ngOnInit(): void {
-    // 1. Conectar Observables
     this.addresses$ = this.userService.addresses$;
     this.paymentMethods$ = this.userService.payments$;
 
-    // 2. Cargar Datos Iniciales
     this.userService.loadAddresses();
     this.userService.loadPaymentMethods();
   }
 
-  // --- LÓGICA DE DIRECCIONES ---
   addNewAddress(): void {
     this.userService.addAddress(this.newAddress).subscribe({
         next: () => {
@@ -69,7 +62,6 @@ export class UserFormsComponent implements OnInit {
      };
   }
 
-  // --- LÓGICA DE PAGOS ---
   addNewPayment(): void {
     this.userService.addPaymentMethod(this.newPayment).subscribe({
         next: () => {

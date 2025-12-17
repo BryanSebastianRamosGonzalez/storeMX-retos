@@ -26,7 +26,6 @@ export class CartComponent implements OnInit {
     if (!cart || !cart.products) return 0;
     
     return cart.products.reduce((acc, item) => {
-      // Usamos 'any' temporalmente para evitar errores de tipado estricto si el precio viene anidado
       const product: any = item.product;
       const price = product.price || 0;
       return acc + (price * item.quantity);
@@ -39,13 +38,12 @@ export class CartComponent implements OnInit {
 
   updateQuantity(productId: string, newQuantity: number): void {
     if (newQuantity < 1) {
-      this.removeFromCart(productId); // Si baja a 0, lo borramos
+      this.removeFromCart(productId); 
       return;
     }
     this.cartService.updateProductQuantity(productId, newQuantity).subscribe();
   }
 
-  // 🛑 NUEVA FUNCIÓN PARA EL BOTÓN "VACIAR"
   onClearCart(): void {
     if (confirm('¿Estás seguro de que deseas vaciar todo el carrito?')) {
       this.cartService.clearCart().subscribe();

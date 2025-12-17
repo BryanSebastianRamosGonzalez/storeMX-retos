@@ -13,12 +13,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './product-list.component.css',
 })
 export class ProductListComponent {
-  productResponse!: ProductResponse; //se declara la propiedad
+  productResponse!: ProductResponse; 
 
-  constructor(private productsService: ProductsService) {} //inyeccion del servicio
+  constructor(private productsService: ProductsService) {} 
   ngOnInit(): void {
     this.getProducts();
-  } // Al iniciar se ejecuta getProducts para tener a la vista todos los productos
+  }
 
   getProducts(page:number=1, limit:number=16){
     this.productsService.getProducts(page, limit).subscribe({

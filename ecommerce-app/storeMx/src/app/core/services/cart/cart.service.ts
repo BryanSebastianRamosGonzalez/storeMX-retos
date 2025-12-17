@@ -20,7 +20,6 @@ import { environment } from '../../../../environments/environment.development';
 export class CartService {
   private baseUrl = `${environment.apiUrl}/cart`;
 
-  // Inicializamos con null, pero el flujo lo actualizará rápido
   private cartSubject = new BehaviorSubject<Cart | null>(null);
   cart$ = this.cartSubject.asObservable();
 
@@ -39,7 +38,7 @@ export class CartService {
   loadCart(): void {
     const userId = this.getUserId();
     if (!userId) {
-      this.cartSubject.next(null); // Limpiar si no hay usuario
+      this.cartSubject.next(null); 
       return;
     }
 
@@ -55,20 +54,13 @@ export class CartService {
     });
   }
 
-  // 🛑 AQUÍ ESTÁ LA MAGIA DEL 404 🛑
   getCartByUser(userId: string): Observable<Cart | null> {
-    // NOTA: Idealmente el backend debería leer el ID del token, no de la URL.
-    // Pero para la entrega de hoy, lo dejamos así que funciona.
     return this.httpClient.get<Cart>(`${this.baseUrl}/user/${userId}`).pipe(
       catchError((error) => {
-        // Si es 404, significa "Usuario Nuevo / Sin Carrito"
         if (error.status === 404) {
-          // Devolvemos un "Carrito Virtual Vacío" para que el frontend no sufra
-          // Usamos 'as any' para evitar conflictos de tipos estrictos por ahora
           const emptyCart = { products: [], user: userId, totalPrice: 0 } as any;
           return of(emptyCart);
         }
-        // Si es otro error (500), sí lo reportamos
         console.error('Error obteniendo carrito:', error);
         return of(null);
       })
@@ -78,7 +70,7 @@ export class CartService {
   addToCart(productId: string, quantity: number = 1): Observable<Cart | null> {
     const userId = this.getUserId();
     if (!userId) {
-      this.toastService.error('Inicia sesión para comprar'); // Feedback visual
+      this.toastService.error('Inicia sesión para comprar'); 
       return of(null);
     }
 
@@ -86,7 +78,6 @@ export class CartService {
 
     return this.httpClient.post(`${this.baseUrl}/add-product`, payload).pipe(
       switchMap(() => {
-        // Recargamos el carrito completo para asegurar sincronización
         return this.getCartByUser(userId);
       }),
       tap((updatedCart) => {
@@ -101,26 +92,22 @@ export class CartService {
     );
   }
 
-  // GETTER: Cantidad de items (Icono rojo del carrito)
   get cartItemCount(): Observable<number> {
     return this.cart$.pipe(
       map((cart) => {
-        if (!cart || !cart.products) return 0; // Protección extra
+        if (!cart || !cart.products) return 0; 
         return cart.products.reduce((total, item) => total + item.quantity, 0);
       })
     );
   }
 
-  // GETTER: Total a Pagar ($)
   get cartTotalAmount$(): Observable<number> {
     return this.cart$.pipe(
       map((cart) => {
         if (!cart || !cart.products) return 0;
         
         return cart.products.reduce((total, item) => {
-          // Manejo robusto de precios (por si viene populated o no)
           const product: any = item.product || item; 
-          // A veces el precio está en item.price (si el back lo calcula) o en item.product.price
           const price = product?.price || 0; 
           
           return total + (price * item.quantity);
@@ -162,10 +149,9 @@ export class CartService {
     const userId = this.getUserId();
     if (!userId) return of(null);
 
-    // Llamamos a la ruta DELETE /clear que acabas de crear
     return this.httpClient.delete(`${this.baseUrl}/clear`).pipe(
       tap(() => {
-        this.cartSubject.next(null); // Limpiamos el estado visualmente
+        this.cartSubject.next(null);
         this.toastService.success('Carrito vaciado correctamente');
       }),
       catchError((err) => {

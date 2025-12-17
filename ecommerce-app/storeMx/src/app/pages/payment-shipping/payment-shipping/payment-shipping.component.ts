@@ -20,7 +20,7 @@ interface ShippingOption {
 })
 export class PaymentShippingComponent implements OnInit {
   cartTotal$!: Observable<number>;
-  cartTotal: number = 0; // Valor para el cálculo reactivo
+  cartTotal: number = 0;
 
   shippingOptions: ShippingOption[] = [
     { id: 1, name: 'Envío Estándar (3-5 días)', cost: 10.0, estimatedDays: 5 },

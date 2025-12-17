@@ -6,11 +6,11 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { catchError, debounceTime, of, switchMap } from 'rxjs';
 import { FormFieldComponent } from '../../shared/form-field/form-field/form-field.component';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // 1. IMPORTAR ROUTER
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-register-form',
-  standalone: true, // Asegúrate que sea standalone si usas imports
+  standalone: true,
   imports: [ReactiveFormsModule, FormFieldComponent, CommonModule],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css'
@@ -32,7 +32,7 @@ export class RegisterFormComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router // 2. INYECTAR ROUTER
+    private router: Router 
   ) {
     this.registerForm = this.fb.group(
       {
@@ -80,7 +80,7 @@ export class RegisterFormComponent {
   phoneValidator(): ValidatorFn {
     return (formControl: AbstractControl): ValidationErrors | null => {
       const phoneValue = formControl.value;
-      if (!phoneValue) return null; // Si está vacío, lo maneja el required
+      if (!phoneValue) return null; 
       if (phoneValue.length !== 10 || Number.isNaN(+phoneValue)) {
         return { invalid_phone: true };
       }
@@ -94,7 +94,7 @@ export class RegisterFormComponent {
         return of(null);
       }
       return this.authService.checkEmailExist(control.value).pipe(
-        debounceTime(500), // Reduje el tiempo a 500ms para que sea más ágil
+        debounceTime(500), 
         switchMap((exist) => (exist ? of({ emailTaken: true }) : of(null))),
         catchError(() => of({ cantFetch: true }))
       );
@@ -116,21 +116,19 @@ export class RegisterFormComponent {
     return '';
   }
 
-  // 🛑 LÓGICA CORREGIDA 🛑
   handleSubmit() {
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched(); // Marca errores si intentan enviar vacío
+      this.registerForm.markAllAsTouched(); 
       return;
     }
 
     console.log('Enviando formulario...', this.registerForm.value);
 
-    // AQUÍ ESTÁ LA MAGIA: .subscribe()
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
         console.log('Registro exitoso:', response);
         alert('¡Cuenta creada con éxito! Bienvenido.');
-        this.router.navigate(['/login']); // Redirige al Login
+        this.router.navigate(['/login']); 
       },
       error: (error) => {
         console.error('Error en registro:', error);

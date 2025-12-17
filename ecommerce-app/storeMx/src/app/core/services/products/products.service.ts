@@ -15,7 +15,7 @@ export type filters = {
 })
 
 export class ProductsService {
-  private baseUrl = `${environment.apiUrl}/products`;//esto es lo que se cambio para usar las variables de entorno 
+  private baseUrl = `${environment.apiUrl}/products`;
 
   constructor(private httpClient:HttpClient) { }
 
@@ -51,27 +51,18 @@ export class ProductsService {
   }
 
    getCheapestProducts(limit: number = 10): Observable<Product[]> {
-      // Define la URL completa para el endpoint de búsqueda
       const endpoint = `${this.baseUrl}/search`;
   
-      // Crea los parámetros de consulta HTTP:
-      // - sortBy=price_asc: ordena por precio ascendente
-      // - limit: número máximo de productos a retornar
       const params = new HttpParams()
           .set('sortBy', 'price_asc') 
           .set('limit', limit.toString());
   
-      // Realiza la petición GET HTTP con los parámetros configurados
       return this.httpClient.get<ProductResponse>(endpoint, { params }).pipe(
-        // Transforma la respuesta para extraer solo el array de productos
         map(response => {
           return response.products; 
         }),
-        // Maneja cualquier error que ocurra durante la petición
         catchError((error) => {
-          // Registra el error en la consola
           console.error('Error al cargar productos más baratos:', error);
-          // Retorna un nuevo error con mensaje personalizado
           return throwError(() => new Error('Fallo la carga de ofertas.'));
         })
       );

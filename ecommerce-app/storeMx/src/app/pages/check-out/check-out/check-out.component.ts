@@ -46,14 +46,12 @@ export class CheckOutComponent implements OnInit {
 
         const user = response.user || response; 
 
-        // BUSCAMOS TUS LISTAS (Arrays)
         this.savedAddresses = user.shippingAddresses || user.addresses || [];
         this.savedCards = user.paymentMethods || user.cards || [];
 
         console.log('📍 Direcciones cargadas:', this.savedAddresses);
         console.log('💳 Tarjetas cargadas:', this.savedCards);
 
-        // AUTO-SELECCIONAR EL PRIMERO
         if (this.savedAddresses.length > 0) {
           this.selectedAddressId = this.savedAddresses[0]._id;
         }
@@ -88,12 +86,9 @@ export class CheckOutComponent implements OnInit {
       return;
     }
     
-    // 🛑 CORRECCIÓN PRINCIPAL: ENVIAR DATOS DOBLES PARA ASEGURAR COMPATIBILIDAD
-    // Enviamos 'shippingAddressId' (nuevo estándar) y 'shippingAddress' (posible legacy)
     const checkoutData = {
       shippingAddressId: this.selectedAddressId,
       paymentMethodId: this.selectedPaymentMethodId,
-      // Respaldo por si el backend busca el nombre sin 'Id'
       shippingAddress: this.selectedAddressId,
       paymentMethod: this.selectedPaymentMethodId
     };
@@ -110,7 +105,6 @@ export class CheckOutComponent implements OnInit {
       },
       error: (err) => {
         console.error('❌ Error Checkout:', err);
-        // Mostrar el mensaje real del servidor para saber qué pasó
         const msg = err.error?.message || err.error?.error || 'Error desconocido al procesar pago';
         this.toastService.error(msg);
       },

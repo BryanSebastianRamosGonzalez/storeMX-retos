@@ -14,13 +14,12 @@
     searchUser,
     
     } from '../controllers/userController.js';
-    import authMiddleware from '../middlewares/authMiddleware.js'; // Middleware de autenticación
-    import isAdmin from '../middlewares/isAdminMiddleware.js'; // Middleware de admin
+    import authMiddleware from '../middlewares/authMiddleware.js'; 
+    import isAdmin from '../middlewares/isAdminMiddleware.js';
 
     const router = express.Router();
 
 
-    // Validaciones comunes para actualizar perfil
     const profileValidations = [
     body('displayName')
         .optional()
@@ -43,10 +42,8 @@
         .isURL().withMessage('Avatar must be a valid URL')
     ];
 
-    // Obtener perfil del usuario autenticado
     router.get('/profile', authMiddleware, getUserProfile);
 
-    // Obtener todos los usuarios (solo admin)
     router.get('/', [
     query('page')
         .optional()
@@ -66,19 +63,16 @@
     ], validate, authMiddleware, isAdmin, getAllUsers);
 
     router.get('/search', searchUser);
-    // Obtener usuario por ID (solo admin)
     router.get('/:userId', [
     param('userId')
         .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId')
     ], validate, authMiddleware, isAdmin, getUserById);
 router.get('/profile-test', (req, res) => {
-  res.send('✅ Profile route works without auth');
+  res.send('Profile route works without auth');
 });
 
-    // Actualizar perfil del usuario
     router.put('/profile', profileValidations, validate, authMiddleware, updateUserProfile);
 
-    // Cambiar contraseña
     router.put('/change-password', [
     body('currentPassword')
         .notEmpty().withMessage('Current password is required'),
@@ -97,7 +91,6 @@ router.get('/profile-test', (req, res) => {
         })
     ], validate, authMiddleware, changePassword);
 
-    // Actualizar usuario (solo admin)
     router.put('/:userId', [
     param('userId')
         .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId'),
@@ -113,16 +106,13 @@ router.get('/profile-test', (req, res) => {
         .isBoolean().withMessage('isActive must be a boolean value')
     ], validate, authMiddleware, isAdmin, updateUser);
 
-    // Desactivar cuenta propia
     router.patch('/deactivate', authMiddleware, deactivateUser);
 
-    // Activar/Desactivar usuario (solo admin)
     router.patch('/:userId/toggle-status', [
     param('userId')
         .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId')
     ], validate, authMiddleware, isAdmin, toggleUserStatus);
 
-    // Eliminar usuario (solo admin)
     router.delete('/:userId', [
     param('userId')
         .isMongoId().withMessage('User ID must be a valid MongoDB ObjectId')

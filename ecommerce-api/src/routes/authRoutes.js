@@ -39,7 +39,6 @@ router.post(
       .isNumeric()
       .withMessage("Phone must contain only numbers"),
 
-    // Campos opcionales con validación
     body("role")
       .optional()
       .isIn(["admin", "customer", "guest"])

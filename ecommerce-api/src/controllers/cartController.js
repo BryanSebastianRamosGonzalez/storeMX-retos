@@ -1,6 +1,5 @@
 import Cart from "../models/cart.js";
 
-// --- 1. AÑADIR PRODUCTO (Lógica Robusta) ---
 async function addProductToCart(req, res, next) {
   try {
     const userId = req.user._id || req.user.id || req.user.userId;
@@ -42,11 +41,9 @@ async function addProductToCart(req, res, next) {
   }
 }
 
-// --- 2. ELIMINAR UN PRODUCTO ---
 async function removeProductFromCart(req, res, next) {
   try {
     const userId = req.user._id || req.user.id || req.user.userId;
-    // Aceptamos productId por params (URL) o body, por seguridad
     const productId = req.params.productId || req.body.productId;
 
     const cart = await Cart.findOne({ user: userId });
@@ -55,7 +52,6 @@ async function removeProductFromCart(req, res, next) {
       return res.status(404).json({ message: 'Cart not found' });
     }
 
-    // Filtramos para quitar el producto
     const initialLength = cart.products.length;
     cart.products = cart.products.filter(
       (item) => item.product.toString() !== productId
@@ -75,10 +71,8 @@ async function removeProductFromCart(req, res, next) {
   }
 }
 
-// --- 3. ACTUALIZAR CANTIDAD (NUEVA: Para botones + y -) ---
 async function updateProductQuantity(req, res, next) {
     try {
-      // Obtenemos userId del token
       const userId = req.user._id || req.user.id || req.user.userId;
       const { productId, quantity } = req.body;
   
@@ -93,7 +87,6 @@ async function updateProductQuantity(req, res, next) {
         if (quantity > 0) {
           cart.products[productIndex].quantity = quantity;
         } else {
-          // Si la cantidad es 0, eliminamos el producto
           cart.products.splice(productIndex, 1);
         }
         await cart.save();
@@ -107,12 +100,10 @@ async function updateProductQuantity(req, res, next) {
     }
   }
 
-// --- 4. VACIAR CARRITO (NUEVA: Para botón "Vaciar") ---
 async function clearCart(req, res, next) {
     try {
       const userId = req.user._id || req.user.id || req.user.userId;
       
-      // Borramos el carrito completo de este usuario
       const deletedCart = await Cart.findOneAndDelete({ user: userId });
       
       if (!deletedCart) {
@@ -125,10 +116,8 @@ async function clearCart(req, res, next) {
     }
   }
 
-// --- 5. OBTENER CARRITO POR USUARIO ---
 async function getCartByUser(req, res, next) {
   try {
-    // Intentamos sacar el ID del token primero, si no del param
     const userId = req.user?._id || req.user?.userId || req.params.id;
     
     const cart = await Cart.findOne({ user: userId }).populate("products.product");
@@ -141,7 +130,6 @@ async function getCartByUser(req, res, next) {
   }
 }
 
-// --- FUNCIONES ADMIN / EXTRAS (Tus originales) ---
 
 async function getCarts(req, res, next) {
   try {
@@ -204,12 +192,11 @@ async function deleteCart(req, res, next) {
     }
 }
 
-// --- EXPORTACIÓN COMPLETA ---
 export {
   addProductToCart,
   removeProductFromCart,
-  updateProductQuantity, // Nueva
-  clearCart,             // Nueva
+  updateProductQuantity, 
+  clearCart,             
   getCartByUser,
   getCarts,
   getCartById,

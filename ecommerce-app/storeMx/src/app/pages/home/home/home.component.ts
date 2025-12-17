@@ -25,7 +25,6 @@ export class HomeComponent implements OnInit {
   cheapestProducts$: Observable<Product[]> = of([]);
 
   flyerImages: carouselImages = [
-    // Puedes poner las rutas correctas aquí o dejar el ejemplo:
     {
       src: 'images/flyers/america.png',
       loaded: false,

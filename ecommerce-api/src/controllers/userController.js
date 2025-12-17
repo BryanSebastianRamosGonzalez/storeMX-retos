@@ -1,35 +1,27 @@
 import bcrypt from "bcrypt";
 import User from "../models/users.js"
 import PaymentMethod from "../models/paymentMethods.js"; 
-import ShippingAddress from "../models/shippingAddress.js"; // Asegúrate que el archivo se llame así (mayúscula/minúscula)
+import ShippingAddress from "../models/shippingAddress.js";
 
-// Obtener perfil del usuario autenticado (CON DATOS COMPLETOS)
 const getUserProfile = async (req, res, next) => {
   try {
     const userId = req.user.userId;
 
-    // 1. Buscamos al usuario base
     const user = await User.findById(userId).select("-hashPassword");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // 2. Buscamos sus direcciones usando el modelo ShippingAddress
     const addresses = await ShippingAddress.find({ user: userId });
 
-    // 3. Buscamos sus métodos de pago usando el modelo PaymentMethod
-    // Filtramos solo los activos (isActive: true) por buena práctica, aunque opcional
     const paymentMethods = await PaymentMethod.find({ user: userId, isActive: true });
 
-    // 4. Combinamos todo en un objeto
     const userWithDetails = user.toObject();
     
-    // Inyectamos las listas
     userWithDetails.shippingAddresses = addresses;
     userWithDetails.paymentMethods = paymentMethods;
 
-    // 5. Enviamos la respuesta completa
     res.status(200).json({
       message: "User profile retrieved successfully",
       user: userWithDetails, 
@@ -39,7 +31,6 @@ const getUserProfile = async (req, res, next) => {
   }
 };
 
-// ... RESTO DEL ARCHIVO (Tus funciones originales se mantienen igual) ...
 
 const getAllUsers = async (req, res, next) => {
   try {
